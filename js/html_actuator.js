@@ -7,10 +7,24 @@ function HTMLActuator() {
   this.score = 0;
 }
 
+HTMLActuator.prototype.scheduleFrame = function (callback) {
+  var called = false;
+  window.requestAnimationFrame(function () {
+    if (called) return;
+    called = true;
+    callback();
+  });
+  window.setTimeout(function () {
+    if (called) return;
+    called = true;
+    callback();
+  }, 50);
+};
+
 HTMLActuator.prototype.actuate = function (grid, metadata) {
   var self = this;
 
-  window.requestAnimationFrame(function () {
+  this.scheduleFrame(function () {
     self.clearContainer(self.tileContainer);
 
     grid.cells.forEach(function (column) {
